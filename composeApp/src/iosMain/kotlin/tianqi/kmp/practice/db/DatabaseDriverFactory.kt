@@ -9,3 +9,7 @@ actual class DatabaseDriverFactory {
         return NativeSqliteDriver(AppDatabase.Schema, "test.db")
     }
 }
+
+actual fun provideDatabaseDriverFactory(): DatabaseDriverFactory {
+    return DatabaseDriverFactory()
+}

@@ -4,8 +4,9 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.launch
+import tianqi.kmp.practice.SpaceXSDK
+import tianqi.kmp.practice.db.provideDatabaseDriverFactory
 import tianqi.kmp.practice.model.RocketLaunch
-import tianqi.kmp.practice.network.SpaceXApi
 
 class HomeScreenComponent(
     componentContext: ComponentContext,
@@ -13,13 +14,13 @@ class HomeScreenComponent(
 ) : CoroutineComponent(componentContext) {
     private val _model: MutableValue<Model> = MutableValue(Model(emptyList()))
     val model: Value<Model> = _model
-    private val spaceXApi by lazy { SpaceXApi() }
+    private val spaceXApi by lazy { SpaceXSDK(provideDatabaseDriverFactory()) }
 
     override fun onCreate() {
         super.onCreate()
         componentScope.launch {
             runCatching {
-                spaceXApi.getAllLaunches()
+                spaceXApi.getLaunches(false)
             }.onSuccess {
                 _model.value = Model(it)
             }.onFailure {
